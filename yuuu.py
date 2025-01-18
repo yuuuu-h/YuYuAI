@@ -8,7 +8,6 @@ class DreamAI:
     def face(self):
         return "👾"
 
-    def place(self, board, stone):
         """
         ミニマックス法で最適な手を計算する。
         """
