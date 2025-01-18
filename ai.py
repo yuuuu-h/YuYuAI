@@ -5,7 +5,7 @@ class DreamAI:
     def face(self):
         return "👾"
 
-    def place(self, board, stone):
+    def can_place(self, board, stone):
         best_move = None
         best_score = float('-inf')
 
