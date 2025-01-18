@@ -1,35 +1,28 @@
 class DreamAI:
     def __init__(self, depth=3):
-        """
-        depth: 先読みの深さ
-        """
         self.depth = depth
 
     def face(self):
         return "👾"
 
     def place(self, board, stone):
-        """
-        ミニマックス法で最適な手を計算する。
-        """
         best_move = None
         best_score = float('-inf')
 
         for y in range(len(board)):
             for x in range(len(board[0])):
-                if can_place_x_y(board, stone, x, y):
-                    # 仮想的に石を置く
+                if can_place_x_y(board, stone, x, y):  # ここでcan_place_x_yを使用
                     new_board = [row[:] for row in board]
                     new_board[y][x] = stone
                     flip_stones(new_board, stone, x, y)
 
-                    # ミニマックスでスコアを計算
                     score = self.minimax(new_board, self.depth, False, stone)
                     if score > best_score:
                         best_score = score
                         best_move = (x, y)
 
         return best_move
+
 
     def minimax(self, board, depth, maximizing, stone):
         """
