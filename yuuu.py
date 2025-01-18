@@ -111,4 +111,3 @@ def flip_stones(board, stone, x, y):
             for fx, fy in stones_to_flip:
                 board[fy][fx] = stone
 
-play_othello(DreamAI(depth=3))
