@@ -1,3 +1,18 @@
+import math
+import random
+
+BLACK=1
+WHITE=2
+
+board = [
+        [0,0,0,0,0,0],
+        [0,0,0,0,0,0],
+        [0,0,1,2,0,0],
+        [0,0,2,1,0,0],
+        [0,0,0,0,0,0],
+        [0,0,0,0,0,0],
+]
+
 class DreamAI:
     def __init__(self, depth=3):
         """
