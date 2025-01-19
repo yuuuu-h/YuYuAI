@@ -110,6 +110,8 @@ def flip_stones(board, stone, x, y):
         if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
             for fx, fy in stones_to_flip:
                 board[fy][fx] = stone
+
+
 # 最後に追加する部分
 def can_place_x_y(board, stone, x, y):
     """
