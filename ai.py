@@ -158,6 +158,20 @@ def can_place(board, stone):
                 return True
     return False
 
+class DreamAI:
+    def __init__(self, depth=3):
+        self.depth = depth
+
+    def face(self):
+        return "👾"
+
+    def place(self, board, stone):
+        best_move = None
+        best_score = float('-inf')
+
+        # (省略されたロジック)
+
+        return best_move
 
 
 
