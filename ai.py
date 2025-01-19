@@ -72,6 +72,8 @@ def minimax(board, depth, maximizing, stone):
         return min_eval
 
 class DreamAI:
+    def name(self):
+        return "DreamAI"
     def __init__(self, depth=3):
         """
         depth: 先読みの深さ
