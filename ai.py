@@ -110,6 +110,54 @@ def flip_stones(board, stone, x, y):
         if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
             for fx, fy in stones_to_flip:
                 board[fy][fx] = stone
+# 最後に追加する部分
+def can_place_x_y(board, stone, x, y):
+    """
+    指定された座標 (x, y) に、指定された色の石を置けるかどうかを判定する関数
+    board: ゲームボードの状態
+    stone: 置く石（1: 黒, 2: 白）
+    x, y: 置きたい位置
+    """
+    # ボードの範囲内かチェック
+    if not (0 <= x < len(board[0]) and 0 <= y < len(board)):
+        return False
+
+    # すでに石が置かれている場所に置けない
+    if board[y][x] != 0:
+        return False
+
+    # 石を置いた時にひっくり返せる相手の石があるかチェック
+    opponent = 3 - stone  # 1なら2（白）、2なら1（黒）
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+
+    for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+        stones_to_flip = []
+
+        # 相手の石を見つける
+        while 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == opponent:
+            stones_to_flip.append((nx, ny))
+            nx += dx
+            ny += dy
+
+        # 自分の石があればひっくり返せるので置ける
+        if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
+            if stones_to_flip:
+                return True
+
+    return False
+
+
+def can_place(board, stone):
+    """
+    ボード全体で指定された色の石を置ける場所があるかを確認する関数
+    """
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            if can_place_x_y(board, stone, x, y):
+                return True
+    return False
+
 
 
 
