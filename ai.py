@@ -1,17 +1,33 @@
-import math
-import random
+# 必要な関数: 石をひっくり返す処理
+def flip_stones(board, stone, x, y):
+    """
+    石を置いた後にひっくり返す処理。
+    """
+    opponent = 3 - stone
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
-BLACK=1
-WHITE=2
+    for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+        stones_to_flip = []
 
-board = [
-        [0,0,0,0,0,0],
-        [0,0,0,0,0,0],
-        [0,0,1,2,0,0],
-        [0,0,2,1,0,0],
-        [0,0,0,0,0,0],
-        [0,0,0,0,0,0],
-]
+        while 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == opponent:
+            stones_to_flip.append((nx, ny))
+            nx += dx
+            ny += dy
+
+        if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
+            for fx, fy in stones_to_flip:
+                board[fy][fx] = stone
+
+
+def can_place_x_y(board, stone, x, y):
+    # 省略: 石が置けるかどうかを判定する関数
+    pass
+
+def can_place(board, player):
+    # 省略: 石を置ける場所があるかどうかを判定する関数
+    pass
+
 
 class DreamAI:
     def __init__(self, depth=3):
@@ -36,7 +52,7 @@ class DreamAI:
                     # 仮想的に石を置く
                     new_board = [row[:] for row in board]
                     new_board[y][x] = stone
-                    self.flip_stones(new_board, stone, x, y)
+                    flip_stones(new_board, stone, x, y)
 
                     # ミニマックスでスコアを計算
                     score = self.minimax(new_board, self.depth, False, stone)
@@ -64,7 +80,7 @@ class DreamAI:
                     if can_place_x_y(board, stone, x, y):
                         new_board = [row[:] for row in board]
                         new_board[y][x] = stone
-                        self.flip_stones(new_board, stone, x, y)
+                        flip_stones(new_board, stone, x, y)
 
                         eval = self.minimax(new_board, depth - 1, False, stone)
                         max_eval = max(max_eval, eval)
@@ -76,7 +92,7 @@ class DreamAI:
                     if can_place_x_y(board, opponent, x, y):
                         new_board = [row[:] for row in board]
                         new_board[y][x] = opponent
-                        self.flip_stones(new_board, opponent, x, y)
+                        flip_stones(new_board, opponent, x, y)
 
                         eval = self.minimax(new_board, depth - 1, True, stone)
                         min_eval = min(min_eval, eval)
@@ -104,22 +120,5 @@ class DreamAI:
                     score -= evaluation_map[y][x]
         return score
 
-    def flip_stones(self, board, stone, x, y):
-        """
-        石を置いた後にひっくり返す処理。
-        """
-        opponent = 3 - stone
-        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            stones_to_flip = []
-
-            while 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == opponent:
-                stones_to_flip.append((nx, ny))
-                nx += dx
-                ny += dy
-
-            if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
-                for fx, fy in stones_to_flip:
-                    board[fy][fx] = stone
+# play_othello(DreamAI(depth=3))
