@@ -17,11 +17,11 @@ class DreamAI:
 
         for y in range(len(board)):
             for x in range(len(board[0])):
-                if can_place_x_y(board, stone, x, y):
+                if self.can_place_x_y(board, stone, x, y):
                     # 仮想的に石を置く
                     new_board = [row[:] for row in board]
                     new_board[y][x] = stone
-                    flip_stones(new_board, stone, x, y)
+                    self.flip_stones(new_board, stone, x, y)
 
                     # ミニマックスでスコアを計算
                     score = self.minimax(new_board, self.depth, False, stone)
@@ -38,7 +38,7 @@ class DreamAI:
         maximizing: 最大化プレイヤー(True)か最小化プレイヤー(False)か
         stone: 現在のプレイヤーの石
         """
-        if depth == 0 or not can_place(board, 1) and not can_place(board, 2):
+        if depth == 0 or not self.can_place(board, 1) and not self.can_place(board, 2):
             return self.evaluate(board, stone)
 
         opponent = 3 - stone
@@ -46,10 +46,10 @@ class DreamAI:
             max_eval = float('-inf')
             for y in range(len(board)):
                 for x in range(len(board[0])):
-                    if can_place_x_y(board, stone, x, y):
+                    if self.can_place_x_y(board, stone, x, y):
                         new_board = [row[:] for row in board]
                         new_board[y][x] = stone
-                        flip_stones(new_board, stone, x, y)
+                        self.flip_stones(new_board, stone, x, y)
 
                         eval = self.minimax(new_board, depth - 1, False, stone)
                         max_eval = max(max_eval, eval)
@@ -58,10 +58,10 @@ class DreamAI:
             min_eval = float('inf')
             for y in range(len(board)):
                 for x in range(len(board[0])):
-                    if can_place_x_y(board, opponent, x, y):
+                    if self.can_place_x_y(board, opponent, x, y):
                         new_board = [row[:] for row in board]
                         new_board[y][x] = opponent
-                        flip_stones(new_board, opponent, x, y)
+                        self.flip_stones(new_board, opponent, x, y)
 
                         eval = self.minimax(new_board, depth - 1, True, stone)
                         min_eval = min(min_eval, eval)
@@ -89,77 +89,57 @@ class DreamAI:
                     score -= evaluation_map[y][x]
         return score
 
+    # 必要な関数: 石をひっくり返す処理
+    def flip_stones(self, board, stone, x, y):
+        """
+        石を置いた後にひっくり返す処理。
+        """
+        opponent = 3 - stone
+        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
-# 必要な関数: 石をひっくり返す処理
-def flip_stones(board, stone, x, y):
-    """
-    石を置いた後にひっくり返す処理。
-    """
-    opponent = 3 - stone
-    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            stones_to_flip = []
 
-    for dx, dy in directions:
-        nx, ny = x + dx, y + dy
-        stones_to_flip = []
+            while 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == opponent:
+                stones_to_flip.append((nx, ny))
+                nx += dx
+                ny += dy
 
-        while 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == opponent:
-            stones_to_flip.append((nx, ny))
-            nx += dx
-            ny += dy
+            if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
+                for fx, fy in stones_to_flip:
+                    board[fy][fx] = stone
 
-        if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
-            for fx, fy in stones_to_flip:
-                board[fy][fx] = stone
+    def can_place_x_y(self, board, stone, x, y):
+        """
+        石を置けるかどうかを調べる関数。
+        """
+        if board[y][x] != 0:
+            return False  # 既に石がある場合は置けない
 
+        opponent = 3 - stone  # 相手の石 (1なら2、2なら1)
+        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
-# 最後に追加する部分
-def can_place_x_y(board, stone, x, y):
-    """
-    指定された座標 (x, y) に、指定された色の石を置けるかどうかを判定する関数
-    board: ゲームボードの状態
-    stone: 置く石（1: 黒, 2: 白）
-    x, y: 置きたい位置
-    """
-    # ボードの範囲内かチェック
-    if not (0 <= x < len(board[0]) and 0 <= y < len(board)):
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            found_opponent = False
+
+            while 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == opponent:
+                nx += dx
+                ny += dy
+                found_opponent = True
+
+            if found_opponent and 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
+                return True  # 石を置ける条件を満たす
+
         return False
 
-    # すでに石が置かれている場所に置けない
-    if board[y][x] != 0:
+    def can_place(self, board, stone):
+        """
+        石を置ける場所を調べる関数。
+        """
+        for y in range(len(board)):
+            for x in range(len(board[0])):
+                if self.can_place_x_y(board, stone, x, y):
+                    return True
         return False
-
-    # 石を置いた時にひっくり返せる相手の石があるかチェック
-    opponent = 3 - stone  # 1なら2（白）、2なら1（黒）
-    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-
-    for dx, dy in directions:
-        nx, ny = x + dx, y + dy
-        stones_to_flip = []
-
-        # 相手の石を見つける
-        while 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == opponent:
-            stones_to_flip.append((nx, ny))
-            nx += dx
-            ny += dy
-
-        # 自分の石があればひっくり返せるので置ける
-        if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
-            if stones_to_flip:
-                return True
-
-    return False
-
-
-def can_place(board, stone):
-    """
-    ボード全体で指定された色の石を置ける場所があるかを確認する関数
-    """
-    for y in range(len(board)):
-        for x in range(len(board[0])):
-            if can_place_x_y(board, stone, x, y):
-                return True
-    return False
-
-
-
-
