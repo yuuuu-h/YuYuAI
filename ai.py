@@ -11,7 +11,7 @@ class DreamAI:
 
         for y in range(len(board)):
             for x in range(len(board[0])):
-                if can_place_x_y(board, stone, x, y):  # ここでcan_place_x_yを使用
+                if can_place(board, stone, x, y):  # ここでcan_place_x_yを使用
                     new_board = [row[:] for row in board]
                     new_board[y][x] = stone
                     flip_stones(new_board, stone, x, y)
@@ -51,7 +51,7 @@ class DreamAI:
             min_eval = float('inf')
             for y in range(len(board)):
                 for x in range(len(board[0])):
-                    if can_place_x_y(board, opponent, x, y):
+                    if can_place(board, opponent, x, y):
                         new_board = [row[:] for row in board]
                         new_board[y][x] = opponent
                         flip_stones(new_board, opponent, x, y)
