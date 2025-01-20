@@ -110,4 +110,13 @@ def flip_stones(board, stone, x, y):
         if 0 <= nx < len(board[0]) and 0 <= ny < len(board) and board[ny][nx] == stone:
             for fx, fy in stones_to_flip:
                 board[fy][fx] = stone
+def can_place_x_y(board, stone, x, y):
+    # 省略: 石が置けるかどうかを判定する関数
+    pass
+
+def can_place(board, player):
+    # 省略: 石を置ける場所があるかどうかを判定する関数
+    pass
+
+
 
