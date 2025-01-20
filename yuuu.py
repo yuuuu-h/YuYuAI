@@ -111,12 +111,40 @@ def flip_stones(board, stone, x, y):
             for fx, fy in stones_to_flip:
                 board[fy][fx] = stone
 def can_place_x_y(board, stone, x, y):
-    # 省略: 石が置けるかどうかを判定する関数
-    pass
+    """
+    (x, y) に石を置けるかを判定する。
+    """
+    if board[y][x] != 0:  # 空いていないマスには置けない
+        return False
 
-def can_place(board, player):
-    # 省略: 石を置ける場所があるかどうかを判定する関数
-    pass
+    opponent = 3 - stone
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
+    for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+        found_opponent = False
+
+        while 0 <= nx < len(board[0]) and 0 <= ny < len(board):
+            if board[ny][nx] == opponent:
+                found_opponent = True
+                nx += dx
+                ny += dy
+            elif board[ny][nx] == stone and found_opponent:
+                return True
+            else:
+                break
+
+    return False
+
+
+def can_place(board, stone):
+    """
+    石を置ける場所があるかどうかを判定する。
+    """
+    for y in range(len(board)):
+        for x in range(len(board[0])):
+            if can_place_x_y(board, stone, x, y):
+                return True
+    return False
 
 
